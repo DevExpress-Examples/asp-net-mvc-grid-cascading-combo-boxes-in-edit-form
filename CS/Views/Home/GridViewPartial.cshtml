@@ -1,0 +1,41 @@
+@using E4425.Models;
+
+@(Html.DevExpress().GridView<Customer>(settings =>
+{
+	settings.Name = "grid";
+	settings.KeyFields(c => c.CustomerId);
+	settings.Width = System.Web.UI.WebControls.Unit.Pixel(500);
+	settings.CallbackRouteValues = new { Controller = "Home", Action = "GridViewPartial" };
+
+	settings.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+	settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Home", Action = "GridViewEditPartial" };
+	settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Home", Action = "GridViewInsertPartial" };
+	settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Home", Action = "GridViewDeletePartial" };
+
+	settings.CommandColumn.Visible = true;
+	settings.CommandColumn.ShowNewButtonInHeader = true;
+	settings.CommandColumn.ShowDeleteButton = true;
+	settings.CommandColumn.ShowEditButton = true;
+
+	settings.Columns.Add(c => c.CustomerId).Visible = false;
+	settings.Columns.Add(c => c.CustomerName);
+	settings.SettingsEditing.ShowModelErrorsForEditors = true;
+	settings.Columns.Add(c => c.CountryId, country =>
+	{
+		country.Caption = "Country";
+		country.EditorProperties().ComboBox(cs => cs.Assign(ComboBoxPropertiesProvider.Current.CountryComboBoxProperties));
+	});
+	settings.Columns.Add(c => c.CityId, city =>
+	{
+		city.Caption = "City";
+		city.EditorProperties().ComboBox(cs => cs.Assign(ComboBoxPropertiesProvider.Current.CityComboBoxProperties));
+	});
+	settings.CellEditorInitialize = (s, e) =>
+	{
+		ASPxEdit editor = (ASPxEdit)e.Editor;
+		editor.ValidationSettings.Display = Display.Dynamic;
+	};
+
+	settings.ClientSideEvents.BeginCallback = "onBeginCallback";
+	settings.ClientSideEvents.EndCallback = "onEndCallback";
+}).SetEditErrorText(ViewData["EditError"] as string).Bind(Model).GetHtml())

@@ -1,3 +1,18 @@
+<!-- default file list -->
+*Files to look at*:
+
+* [HomeController.cs](./CS/Controllers/HomeController.cs) (VB: [HomeController.vb](./VB/Controllers/HomeController.vb))
+* [Global.asax](./CS/Global.asax) (VB: [Global.asax](./VB/Global.asax))
+* [Global.asax.cs](./CS/Global.asax.cs) (VB: [Global.asax](./VB/Global.asax))
+* [City.cs](./CS/Models/City.cs) (VB: [City.vb](./VB/Models/City.vb))
+* [ComboBoxPropertiesProvider.cs](./CS/Models/ComboBoxPropertiesProvider.cs) (VB: [ComboBoxPropertiesProvider.vb](./VB/Models/ComboBoxPropertiesProvider.vb))
+* [Country.cs](./CS/Models/Country.cs) (VB: [Country.vb](./VB/Models/Country.vb))
+* [Customer.cs](./CS/Models/Customer.cs) (VB: [Customer.vb](./VB/Models/Customer.vb))
+* [WoldCitiesModel.Context.cs](./CS/Models/WoldCitiesModel.Context.cs) (VB: [WoldCitiesModel.Context.vb](./VB/Models/WoldCitiesModel.Context.vb))
+* [WoldCitiesModel.cs](./CS/Models/WoldCitiesModel.cs) (VB: [WoldCitiesModel.vb](./VB/Models/WoldCitiesModel.vb))
+* [GridViewPartial.cshtml](./CS/Views/Home/GridViewPartial.cshtml)
+* [Index.cshtml](./CS/Views/Home/Index.cshtml)
+<!-- default file list end -->
 # GridView - How to implement cascaded combo boxes in the EditForm
 
 <p>This example is an illustration of the <a href="https://www.devexpress.com/Support/Center/p/KA18675">KA18675: MVC ComboBox Extension - How to implement cascaded combo boxes</a> KB Article. Refer to the Article for an explanation.<br><br><strong>UPDATED:</strong><br><br></p>

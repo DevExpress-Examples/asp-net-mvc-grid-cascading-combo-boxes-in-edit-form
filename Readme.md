@@ -3,7 +3,7 @@
 
 * [HomeController.cs](./CS/Controllers/HomeController.cs) (VB: [HomeController.vb](./VB/Controllers/HomeController.vb))
 * [Global.asax](./CS/Global.asax) (VB: [Global.asax](./VB/Global.asax))
-* [Global.asax.cs](./CS/Global.asax.cs) (VB: [Global.asax](./VB/Global.asax))
+* [Global.asax.cs](./CS/Global.asax.cs) (VB: [Global.asax.vb](./VB/Global.asax.vb))
 * [City.cs](./CS/Models/City.cs) (VB: [City.vb](./VB/Models/City.vb))
 * [ComboBoxPropertiesProvider.cs](./CS/Models/ComboBoxPropertiesProvider.cs) (VB: [ComboBoxPropertiesProvider.vb](./VB/Models/ComboBoxPropertiesProvider.vb))
 * [Country.cs](./CS/Models/Country.cs) (VB: [Country.vb](./VB/Models/Country.vb))

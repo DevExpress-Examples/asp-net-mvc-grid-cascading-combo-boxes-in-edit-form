@@ -1,10 +1,78 @@
-<!-- default badges list -->
-![](https://img.shields.io/endpoint?url=https://codecentral.devexpress.com/api/v1/VersionRange/128550193/16.1.5%2B)
-[![](https://img.shields.io/badge/Open_in_DevExpress_Support_Center-FF7200?style=flat-square&logo=DevExpress&logoColor=white)](https://supportcenter.devexpress.com/ticket/details/E4425)
-[![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
-<!-- default badges end -->
-<!-- default file list -->
-*Files to look at*:
+# Grid View for ASP.NET MVC - How to implement cascading combo boxes in the grid's edit form
+<!-- run online -->
+**[[Run Online]](https://codecentral.devexpress.com/e4425/)**
+<!-- run online end -->
+
+This example demonstrates how to create cascading combo box editors and use them to edit grid data.
+
+## Overview
+
+Follow the steps below to implement cascading combo boxes in the grid's edit form:
+
+1. Call a column's [MVCxGridViewColumn.EditorProperties](https://docs.devexpress.com/AspNetMvc/DevExpress.Web.Mvc.MVCxGridViewColumn.EditorProperties) method to add a combo box editor to the column.
+
+    ```cshtml
+    settings.Columns.Add(c => c.CountryId, country =>{
+		country.Caption = "Country";
+		country.EditorProperties().ComboBox(cs => cs.Assign(ComboBoxPropertiesProvider.Current.CountryComboBoxProperties));
+	});
+	settings.Columns.Add(c => c.CityId, city =>{
+		city.Caption = "City";
+		city.EditorProperties().ComboBox(cs => cs.Assign(ComboBoxPropertiesProvider.Current.CityComboBoxProperties));
+	});
+    ```
+
+2. Add a [MVCxColumnComboBoxProperties](https://docs.devexpress.com/AspNetMvc/DevExpress.Web.Mvc.MVCxColumnComboBoxProperties) object to specify an editor's settings and call the [MVCxColumnComboBoxProperties.BindList](https://docs.devexpress.com/AspNetMvc/DevExpress.Web.Mvc.MVCxColumnComboBoxProperties.BindList.overloads) method to bind the column to a data source.
+
+    ```csharp
+    MVCxColumnComboBoxProperties countryComboBoxProperties;
+    public MVCxColumnComboBoxProperties CountryComboBoxProperties {
+        get {
+            if(countryComboBoxProperties == null)
+                countryComboBoxProperties = CreateCountryComboBox();
+            return countryComboBoxProperties;
+        }
+    }
+    protected MVCxColumnComboBoxProperties CreateCountryComboBox() {
+        MVCxColumnComboBoxProperties cs = new MVCxColumnComboBoxProperties();
+        cs.CallbackRouteValues = new { Controller = "Home", Action = "ComboBoxCountryPartial" };
+        // ...
+        cs.ClientSideEvents.SelectedIndexChanged = "CountriesCombo_SelectedIndexChanged";
+        cs.BindList(WorldCities.Countries.ToList());
+        return cs;
+    }
+    ```
+
+3. Specify the secondary editor's `CallbackRouteValue` parameters.
+
+4. Handle the primary editor's `SelectedIndexChanged` event. In the handler, call the secondary editor's `PerformCallback` method to update the editor's data.
+
+    ```js
+    function CountriesCombo_SelectedIndexChanged(s, e) {
+        customCallback = true;
+        grid.GetEditor('CityId').PerformCallback();
+    }
+    ```
+
+5. Handle the secondary editor's client-side `BeginCallback` event and pass the selected value of the secondary editor as a parameter.
+
+    ```js
+    function CitiesCombo_BeginCallback(s, e) {
+        e.customArgs['CountryId'] = grid.GetEditor('CountryId').GetValue();
+    }
+    ```
+
+6. Use the grid's [GetComboBoxCallbackResult](https://docs.devexpress.com/AspNetMvc/DevExpress.Web.Mvc.GridExtensionBase.GetComboBoxCallbackResult.overloads) method to get the result of callback processing.
+
+    ```csharp
+    public ActionResult ComboBoxCountryPartial(){
+        return GridViewExtension.GetComboBoxCallbackResult(ComboBoxPropertiesProvider.Current.CountryComboBoxProperties);
+    }
+    ```
+
+7. Call the secondary editor's `CallbackRouteValues.Action` method to populate the editor with values based on the passed parameter.
+
+## Files to Review
 
 * [HomeController.cs](./CS/Controllers/HomeController.cs) (VB: [HomeController.vb](./VB/Controllers/HomeController.vb))
 * [Global.asax](./CS/Global.asax) (VB: [Global.asax](./VB/Global.asax))
@@ -17,109 +85,12 @@
 * [WoldCitiesModel.cs](./CS/Models/WoldCitiesModel.cs) (VB: [WoldCitiesModel.vb](./VB/Models/WoldCitiesModel.vb))
 * [GridViewPartial.cshtml](./CS/Views/Home/GridViewPartial.cshtml)
 * [Index.cshtml](./CS/Views/Home/Index.cshtml)
-<!-- default file list end -->
-# GridView - How to implement cascaded combo boxes in the EditForm
-<!-- run online -->
-**[[Run Online]](https://codecentral.devexpress.com/e4425/)**
-<!-- run online end -->
 
-<p>This example is an illustration of the <a href="https://www.devexpress.com/Support/Center/p/KA18675">KA18675: MVC ComboBox Extension - How to implement cascaded combo boxes</a> KB Article. Refer to the Article for an explanation.<br><br><strong>UPDATED:</strong><br><br></p>
-<p>Starting with <strong>v16.1</strong>, it's not necessary to define the second combo box using the <a href="https://documentation.devexpress.com/#AspNet/DevExpressWebMvcMVCxGridViewColumn_SetEditItemTemplateContenttopic">MVCxGridViewColumn.SetEditItemTemplateContent</a> method to enable callbacks. <br>Use a new API instead
+## Documentation
 
-* <a href="https://docs.devexpress.com/AspNetMvc/DevExpress.Web.Mvc.MVCxGridViewColumn.EditorProperties">MVCxGridViewColumn.EditorProperties</a> 
-* <a href="https://docs.devexpress.com/AspNetMvc/DevExpress.Web.Mvc.MVCxColumnComboBoxProperties">MVCxColumnComboBoxProperties</a> 
-* <a href="http://help.devexpress.com/#AspNet/DevExpressWebMvcGridExtensionBase_GetComboBoxCallbackResulttopic">GetComboBoxCallbackResult</a> <br> <br>You can find detailed steps by clicking the "Show Implementation Details" link below.</p>
+* [MVC ComboBox Extension - How to implement cascaded combo boxes](https://supportcenter.devexpress.com/ticket/details/ka18675/mvc-combobox-extension-how-to-implement-cascaded-combo-boxes)
+* [Passing Values to a Controller Action through Callbacks](https://docs.devexpress.com/AspNetMvc/9941/common-features/callback-based-functionality/passing-values-to-a-controller-action-through-callbacks)
 
+## More Examples
 
-<h3>Description</h3>
-
-1.&nbsp;Use the&nbsp;<a href="https://docs.devexpress.com/AspNetMvc/DevExpress.Web.Mvc.MVCxGridViewColumn.EditorProperties">MVCxGridViewColumn.EditorProperties</a> method to define an editor at the column level.&nbsp;<br>
-```cs
-//CS
-settings.Columns.Add(c => c.CountryId, country =>
-{
-	country.Caption = "Country";
-	country.EditorProperties().ComboBox(cs => cs.Assign(ComboBoxPropertiesProvider.Current.CountryComboBoxProperties));
-});
-```
-```vb
-''VB
-settings.Columns.Add(Function(c) c.CountryId, Sub(country)
-												  country.Caption = "Country"
-												  country.EditorProperties().ComboBox(Sub(cs)
-																						  cs.Assign(ComboBoxPropertiesProvider.Current.CountryComboBoxProperties)
-																					  End Sub)
-											  End Sub)
-
-```
-<br>2. Use the&nbsp; <a href="http://help.devexpress.com/#AspNet/DevExpressWebMvcGridExtensionBase_GetComboBoxCallbackResulttopic">GetComboBoxCallbackResult</a>&nbsp;method to handle a combo box callback on the server.<br>
-```cs
-//CS
-public ActionResult ComboBoxCountryPartial()
-{
-    return GridViewExtension.GetComboBoxCallbackResult(ComboBoxPropertiesProvider.Current.CountryComboBoxProperties);
-}
-```
-```vb
-''VB
-Public Function ComboBoxCountryPartial() As ActionResult
-       Return GridViewExtension.GetComboBoxCallbackResult(ComboBoxPropertiesProvider.Current.CountryComboBoxProperties)
-End Function
-```
-<br><br>3. &nbsp;Use the&nbsp;&nbsp;<a href="https://docs.devexpress.com/AspNetMvc/DevExpress.Web.Mvc.MVCxColumnComboBoxProperties">MVCxColumnComboBoxProperties</a>&nbsp;class to create combo box settings.&nbsp;The <a href="https://documentation.devexpress.com/#AspNet/DevExpressWebMvcMVCxColumnComboBoxProperties_BindListtopic">MVCxColumnComboBoxProperties.BindList</a> &nbsp;method should be used to bind a column to data.&nbsp;<br>
-```cs
-//CS
-MVCxColumnComboBoxProperties countryComboBoxProperties;
- public MVCxColumnComboBoxProperties CountryComboBoxProperties {
-            get
-            {
-                if (countryComboBoxProperties == null)
-                    countryComboBoxProperties = CreateCountryComboBox();
-                return countryComboBoxProperties;
-            }
-  }
- protected MVCxColumnComboBoxProperties CreateCountryComboBox(){
-            MVCxColumnComboBoxProperties cs = new MVCxColumnComboBoxProperties();
-            cs.CallbackRouteValues = new { Controller = "Home", Action = "ComboBoxCountryPartial" };
-            cs.Width = Unit.Percentage(100);
-            cs.TextField = "CountryName";
-            cs.ValueField = "CountryId";
-            cs.ValueType = typeof(int);
-            cs.IncrementalFilteringDelay = 1000;
-            cs.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
-            cs.FilterMinLength = 2;
-            cs.CallbackPageSize = 20;
-            cs.ClientSideEvents.SelectedIndexChanged = "CountriesCombo_SelectedIndexChanged";
-            cs.BindList(WorldCities.Countries.ToList());
-            return cs;
-  }
-```
-```vb
-''VB
-Private _countryComboBoxProperties As MVCxColumnComboBoxProperties
-        Public ReadOnly Property CountryComboBoxProperties() As MVCxColumnComboBoxProperties
-            Get
-                If _countryComboBoxProperties Is Nothing Then
-                    _countryComboBoxProperties = CreateCountryComboBox()
-                End If
-                Return _countryComboBoxProperties
-            End Get
-End Property
-Protected Function CreateCountryComboBox() As MVCxColumnComboBoxProperties
-			Dim cs As New MVCxColumnComboBoxProperties()
-			cs.CallbackRouteValues = New With {Key .Controller = "Home", Key .Action = "ComboBoxCountryPartial"}
-			cs.Width = Unit.Percentage(100)
-			cs.TextField = "CountryName"
-			cs.ValueField = "CountryId"
-			cs.ValueType = GetType(Integer)
-			cs.IncrementalFilteringDelay = 1000
-			cs.IncrementalFilteringMode = IncrementalFilteringMode.Contains
-			cs.FilterMinLength = 2
-			cs.CallbackPageSize = 20
-			cs.ClientSideEvents.SelectedIndexChanged = "CountriesCombo_SelectedIndexChanged"
-			cs.BindList(WorldCities.Countries.ToList())
-			Return cs
-End Function
-```
-
-
+* [ComboBox for ASP.NET MVC - How to implement cascading combo boxes](https://github.com/DevExpress-Examples/asp-net-mvc-cascading-combo-boxes)

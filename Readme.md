@@ -4,9 +4,6 @@
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 <!-- default badges end -->
 # Grid View for ASP.NET MVC - How to implement cascading combo boxes in the grid's edit form
-<!-- run online -->
-**[[Run Online]](https://codecentral.devexpress.com/128550193/)**
-<!-- run online end -->
 
 This example demonstrates how to create cascading combo box editors and use them to edit grid data.
 
